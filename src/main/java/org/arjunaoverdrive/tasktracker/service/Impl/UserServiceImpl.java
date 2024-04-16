@@ -6,6 +6,7 @@ import org.arjunaoverdrive.tasktracker.dao.UserRepository;
 import org.arjunaoverdrive.tasktracker.model.User;
 import org.arjunaoverdrive.tasktracker.service.UserService;
 import org.arjunaoverdrive.tasktracker.util.BeanUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Flux<User> findAllUsers() {
@@ -37,6 +39,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
@@ -52,6 +55,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<Void> deleteUserById(String id) {
         return userRepository.deleteById(id);
+    }
+
+    @Override
+    public Mono<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
 }

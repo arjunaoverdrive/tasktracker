@@ -17,36 +17,36 @@ import java.util.Map;
 
 @Configuration
 public class ValidationConfig {
-    @Bean
-    public DefaultErrorAttributes errorAttributes() {
-        return new DefaultErrorAttributes() {
-
-            @Override
-            public void storeErrorInformation(Throwable error, ServerWebExchange exchange) {
-                super.storeErrorInformation(error, exchange);
-            }
-
-            @Override
-            public Map<String, Object> getErrorAttributes(ServerRequest serverRequest, ErrorAttributeOptions options) {
-                Map<String, Object> errorAttributes = super.getErrorAttributes(serverRequest, options);
-
-                errorAttributes.put("message", getError(serverRequest).getMessage());
-                errorAttributes.put("status", HttpStatus.BAD_REQUEST.value());
-
-                return errorAttributes;
-            }
-        };
-    }
-
-    @Bean
-    public Validator validator() {
-        ValidatorFactory validatorFactory =
-                Validation.byProvider(HibernateValidator.class)
-                        .configure()
-                        .failFast(true)
-                        .buildValidatorFactory();
-        return validatorFactory.getValidator();
-    }
+//    @Bean
+//    public DefaultErrorAttributes errorAttributes() {
+//        return new DefaultErrorAttributes() {
+//
+//            @Override
+//            public void storeErrorInformation(Throwable error, ServerWebExchange exchange) {
+//                super.storeErrorInformation(error, exchange);
+//            }
+//
+//            @Override
+//            public Map<String, Object> getErrorAttributes(ServerRequest serverRequest, ErrorAttributeOptions options) {
+//                Map<String, Object> errorAttributes = super.getErrorAttributes(serverRequest, options);
+//
+//                errorAttributes.put("message", getError(serverRequest).getMessage());
+//                errorAttributes.put("status", HttpStatus.BAD_REQUEST.value());
+//
+//                return errorAttributes;
+//            }
+//        };
+//    }
+//
+//    @Bean
+//    public Validator validator() {
+//        ValidatorFactory validatorFactory =
+//                Validation.byProvider(HibernateValidator.class)
+//                        .configure()
+//                        .failFast(true)
+//                        .buildValidatorFactory();
+//        return validatorFactory.getValidator();
+//    }
 
 
 }

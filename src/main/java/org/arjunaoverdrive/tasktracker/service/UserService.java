@@ -18,4 +18,6 @@ public interface UserService {
     Mono<User> updateUser(User user);
 
     Mono<Void> deleteUserById(String id);
+
+    Mono<User> findByUsername(String username);
 }

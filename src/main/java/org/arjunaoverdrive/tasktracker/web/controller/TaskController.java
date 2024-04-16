@@ -1,6 +1,7 @@
 package org.arjunaoverdrive.tasktracker.web.controller;
 
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.arjunaoverdrive.tasktracker.mapper.TaskMapper;
 import org.arjunaoverdrive.tasktracker.model.Task;
@@ -10,10 +11,10 @@ import org.arjunaoverdrive.tasktracker.web.dto.request.AddObserversRequest;
 import org.arjunaoverdrive.tasktracker.web.dto.request.TaskSubmitRequest;
 import org.arjunaoverdrive.tasktracker.web.dto.request.TaskUpsertRequest;
 import org.arjunaoverdrive.tasktracker.web.dto.response.TaskResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -29,6 +30,7 @@ public class TaskController {
     private final TaskMapper taskMapper;
     private final TaskUpdatesPublisher publisher;
 
+    @ApiResponses(value = { @ApiResponse(responseCode = "200", description = "get all tasks") })
     @GetMapping
     public Flux<TaskResponse> getAllTasks() {
         Flux<Task> allTasksFlux = taskService.findAll();
@@ -44,7 +46,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<TaskResponse>> createTask(@RequestBody TaskSubmitRequest request) {
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    public Mono<ResponseEntity<TaskResponse>> createTask( @RequestBody TaskSubmitRequest request) {
         Task task = taskMapper.toTask(request);
         return taskService.save(task)
                 .map(taskMapper::toTaskResponse)
@@ -54,6 +57,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Mono<ResponseEntity<TaskResponse>> updateTaskById(@PathVariable String id,
                                                              @Validated @RequestBody TaskUpsertRequest request) {
         Task task = taskMapper.toTask(id, request);
@@ -76,6 +80,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public Mono<Void> deleteById(@PathVariable String id) {
         return taskService.deleteById(id);
     }

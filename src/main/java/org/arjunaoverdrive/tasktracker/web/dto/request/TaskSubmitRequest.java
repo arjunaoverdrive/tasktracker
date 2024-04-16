@@ -16,8 +16,6 @@ public class TaskSubmitRequest {
     private String name;
     @Size(max = 1204)
     private String description;
-    @NotEmpty
-    private String authorId;
     private String assigneeId;
     @Builder.Default
     private Set<String> observerIds = new HashSet<>();

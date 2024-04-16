@@ -14,6 +14,5 @@ public class TaskUpsertRequest {
     private String description;
     @ValidStatus
     private String status;
-    private String authorId;
     private String assigneeId;
 }

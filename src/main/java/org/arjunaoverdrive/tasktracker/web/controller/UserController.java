@@ -6,9 +6,12 @@ import org.arjunaoverdrive.tasktracker.service.UserService;
 import org.arjunaoverdrive.tasktracker.web.dto.request.UserRequest;
 import org.arjunaoverdrive.tasktracker.web.dto.response.UserResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 
 @RestController
@@ -19,6 +22,7 @@ public class UserController {
     private final UserService userService;
     private final UserMapper userMapper;
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_MANAGER')")
     public Flux<UserResponse> getAllUsers(){
         return userService.findAllUsers().map(userMapper::toUserResponse);
     }
